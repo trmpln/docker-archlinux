@@ -4,7 +4,6 @@
 # requires root
 set -e
 set -m
-set -x
 
 hash pacstrap &>/dev/null || {
 	echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
@@ -57,7 +56,7 @@ case $ARCH in
 		PACMAN_EXTRA_PKGS='archlinuxarm-keyring'
 		EXPECT_TIMEOUT=300
 		ARCH_KEYRING=archlinuxarm
-		DOCKER_IMAGE_NAME=archlinuxarm
+		DOCKER_IMAGE_NAME=archlinux-$ARCH
 		mkdir -p $ROOTFS/usr/bin
 		cp $(which qemu-arm-static) $ROOTFS/usr/bin
 		;;
@@ -117,5 +116,5 @@ ln -sf /proc/self/fd $DEV/fd
 
 rm $ROOTFS/usr/bin/qemu-arm-static
 
-tar --numeric-owner --xattrs --acls -f ${DOCKER_IMAGE_NAME}.tar.xz -C $ROOTFS -c . 
+tar --numeric-owner --xattrs --acls -f /mnt/host/${DOCKER_IMAGE_NAME}.tar.xz -C $ROOTFS -c -J . 
 rm -rf $ROOTFS
